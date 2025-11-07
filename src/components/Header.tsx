@@ -8,9 +8,11 @@ import { Logo } from '@/components/icons';
 interface HeaderProps {
   showFavoritesOnly: boolean;
   onShowFavoritesOnlyChange: (checked: boolean) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
-export default function Header({ showFavoritesOnly, onShowFavoritesOnlyChange }: HeaderProps) {
+export default function Header({ showFavoritesOnly, onShowFavoritesOnlyChange, searchQuery, onSearchChange }: HeaderProps) {
   return (
     <header className="flex items-center justify-between p-4 border-b border-border shrink-0 z-40 bg-background">
       <div className="flex items-center gap-3">
@@ -20,7 +22,12 @@ export default function Header({ showFavoritesOnly, onShowFavoritesOnlyChange }:
       <div className="flex items-center gap-6">
         <div className="relative w-48 md:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input placeholder="Search channels..." className="pl-10 bg-muted border-muted-foreground/20" />
+          <Input 
+            placeholder="Search channels..." 
+            className="pl-10 bg-muted border-muted-foreground/20" 
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
         </div>
         <div className="flex items-center space-x-2">
           <Switch 

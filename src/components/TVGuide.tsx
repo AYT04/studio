@@ -11,9 +11,10 @@ import CurrentTimeIndicator from '@/components/CurrentTimeIndicator';
 
 interface TVGuideProps {
   showFavoritesOnly: boolean;
+  searchQuery: string;
 }
 
-export default function TVGuide({ showFavoritesOnly }: TVGuideProps) {
+export default function TVGuide({ showFavoritesOnly, searchQuery }: TVGuideProps) {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [selectedVideoId, setSelectedVideoId] = useState<string | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -67,30 +68,48 @@ export default function TVGuide({ showFavoritesOnly }: TVGuideProps) {
   const totalGuideMinutes = (GUIDE_END_HOUR - GUIDE_START_HOUR) * 60;
   const totalGuideWidth = totalGuideMinutes * PIXELS_PER_MINUTE;
 
-  const favoritePrograms = useMemo(() => {
-    return new Set(
-        initialChannels.flatMap(c => c.programs)
-        .filter(p => favorites.has(p.id))
-        .map(p => p.id)
-    );
-  }, [favorites]);
-
   const favoriteChannels = useMemo(() => {
     const channelIds = new Set<string>();
+    if (!showFavoritesOnly) return channelIds;
+
     for (const channel of initialChannels) {
-        for (const program of channel.programs) {
-            if (favoritePrograms.has(program.id)) {
-                channelIds.add(channel.id);
-                break;
-            }
+      for (const program of channel.programs) {
+        if (favorites.has(program.id)) {
+          channelIds.add(channel.id);
+          break;
         }
+      }
     }
     return channelIds;
-  }, [favoritePrograms]);
+  }, [favorites, showFavoritesOnly]);
 
-  const displayedChannels = showFavoritesOnly
-    ? initialChannels.filter(c => favoriteChannels.has(c.id))
-    : initialChannels;
+  const displayedChannels = useMemo(() => {
+    let channels = initialChannels;
+
+    if (showFavoritesOnly) {
+      channels = channels.filter(c => favoriteChannels.has(c.id));
+    }
+
+    if (searchQuery) {
+      const lowercasedQuery = searchQuery.toLowerCase();
+      channels = channels.filter(channel => 
+        channel.name.toLowerCase().includes(lowercasedQuery) || 
+        channel.programs.some(program => program.title.toLowerCase().includes(lowercasedQuery))
+      ).map(channel => {
+        // If the channel name matches, show all its programs
+        if (channel.name.toLowerCase().includes(lowercasedQuery)) {
+            return channel;
+        }
+        // Otherwise, filter to show only matching programs
+        return {
+            ...channel,
+            programs: channel.programs.filter(program => program.title.toLowerCase().includes(lowercasedQuery)),
+        };
+      });
+    }
+
+    return channels;
+  }, [initialChannels, showFavoritesOnly, favoriteChannels, searchQuery]);
 
   return (
     <>
