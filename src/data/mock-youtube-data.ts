@@ -1,6 +1,3 @@
-import { PlaceHolderImages } from "@/lib/placeholder-images";
-
-const findImage = (id: string) => PlaceHolderImages.find(img => img.id === id)?.imageUrl ?? `https://picsum.photos/seed/${id}/100/100`;
 
 export interface Program {
   id: string;
@@ -22,7 +19,7 @@ export const channels: Channel[] = [
   {
     id: 'ch-1',
     name: 'Lofi Girl',
-    logoUrl: findImage('ch-logo-lofi'),
+    logoUrl: 'https://images.unsplash.com/photo-1644417089793-f2145c957736?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxnaXJsJTIwaWxsdXN0cmF0aW9ufGVufDB8fHx8MTc2MjUzNTE0OHww&ixlib=rb-4.1.0&q=80&w=100',
     programs: [
       { id: 'p-1-1', title: 'lofi hip hop radio - beats to relax/study to', startTime: '18:00', endTime: '24:00', videoId: 'jfKfPfyJRdk', description: '24/7 live stream of chill beats perfect for studying, relaxing, or focusing.' },
       { id: 'p-1-2', title: 'Chillhop Radio - jazzy & lofi hip hop beats', startTime: '00:00', endTime: '06:00', videoId: '5yx6BWlEVcY', description: 'Just a friendly raccoon enjoying study beats.' },
@@ -34,7 +31,7 @@ export const channels: Channel[] = [
   {
     id: 'ch-2',
     name: 'freeCodeCamp.org',
-    logoUrl: findImage('ch-logo-fcc'),
+    logoUrl: 'https://images.unsplash.com/photo-1585483266738-0a57093414c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxjYW1wZmlyZSUyMGxvZ298ZW58MHx8fHwxNzYyNTM1MTQ4fDA&ixlib=rb-4.1.0&q=80&w=100',
     programs: [
       { id: 'p-2-1', title: 'SQL & PostgreSQL Tutorial', startTime: '18:00', endTime: '20:30', videoId: 'qw--VYLpxG4', description: 'Learn SQL and PostgreSQL in this full database course for beginners.' },
       { id: 'p-2-2', title: 'Python for Beginners', startTime: '20:30', endTime: '22:00', videoId: 'eWRfhZMgVBI', description: 'A comprehensive Python programming course for all levels.' },
@@ -46,7 +43,7 @@ export const channels: Channel[] = [
   {
     id: 'ch-3',
     name: 'Marques Brownlee (MKBHD)',
-    logoUrl: findImage('ch-logo-mkbhd'),
+    logoUrl: 'https://images.unsplash.com/photo-1662052955098-042b46e60c2b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx0ZWNoJTIwbG9nb3xlbnwwfHx8fDE3NjI0NTIwNzJ8MA&ixlib=rb-4.1.0&q=80&w=100',
     programs: [
       { id: 'p-3-1', title: 'The Problem With Foldable Phones!', startTime: '18:30', endTime: '19:00', videoId: '1r-b-Hk_rKM', description: 'Exploring the pros and cons of the latest foldable smartphones on the market.' },
       { id: 'p-3-2', title: 'Dope Tech: The Gold Edition!', startTime: '19:00', endTime: '19:30', videoId: 'Y9t13n_a4iM', description: 'Showcasing some of the most interesting and innovative tech right now.'},
@@ -58,7 +55,7 @@ export const channels: Channel[] = [
   {
     id: 'ch-4',
     name: 'NASA',
-    logoUrl: findImage('ch-logo-nasa'),
+    logoUrl: 'https://images.unsplash.com/photo-1688646556970-ef523af3ed97?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxzcGFjZSUyMGFnZW5jeXxlbnwwfHx8fDE3NjI1MzUxNDh8MA&ixlib=rb-4.1.0&q=80&w=100',
     programs: [
       { id: 'p-4-1', title: 'NASA Live: Official Stream of NASA TV', startTime: '18:00', endTime: '21:00', videoId: '21X5lGlDOfg', description: 'Live coverage of missions, press conferences, and stunning views from the ISS.' },
       { id: 'p-4-2', title: 'Stunning New Images from James Webb Telescope', startTime: '21:00', endTime: '21:30', videoId: 'xP2z_O-R_sA', description: 'Exploring the latest breathtaking images from the JWST.' },
@@ -70,7 +67,7 @@ export const channels: Channel[] = [
   {
     id: 'ch-5',
     name: 'Bon Appétit',
-    logoUrl: findImage('ch-logo-ba'),
+    logoUrl: 'https://images.unsplash.com/photo-1631530311366-31a3ac1c7107?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmb29kJTIwbWFnYXppbmV8ZW58MHx8fHwxNzYyNTM1MTQ4fDA&ixlib=rb-4.1.0&q=80&w=100',
     programs: [
         { id: 'p-5-1', title: 'Pro Chefs Make Their Favorite Sandwiches', startTime: '18:00', endTime: '18:45', videoId: 'JyH0gW3eFfA', description: 'Watch professional chefs elevate the humble sandwich into a culinary masterpiece.' },
         { id: 'p-5-2', title: 'Making Perfect Fettuccine Alfredo', startTime: '18:45', endTime: '19:30', videoId: 'o-d3sPCtqgQ', description: 'Learn the secrets to a creamy, rich, and perfect Fettuccine Alfredo sauce.' },
