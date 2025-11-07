@@ -44,21 +44,28 @@ const youtubeSearchFlow = ai.defineFlow(
   },
   async ({query}): Promise<YoutubeSearchOutput> => {
     
-    if (!query) {
+    const lowerCaseQuery = query.toLowerCase();
+
+    if (!lowerCaseQuery) {
       return mockChannels.map(channel => ({
         ...channel,
         programs: channel.programs.slice(0, 5)
       }));
     }
 
-    const { output } = await ai.generate({
-        prompt: `You are a YouTube channel recommendation expert. Based on the user's query, generate a list of 5 relevant YouTube channels. For each channel, provide its name, a plausible Unsplash URL for a logo, and a list of its 5 most recent video titles with descriptions, YouTube video IDs, and scheduled start/end times within a 24-hour TV guide format.
-
-        Query: "${query}"`,
-        output: { schema: YoutubeSearchOutputSchema },
+    const filteredChannels = mockChannels.filter(channel => {
+        const channelMatch = channel.name.toLowerCase().includes(lowerCaseQuery);
+        const programMatch = channel.programs.some(program => 
+            program.title.toLowerCase().includes(lowerCaseQuery) || 
+            program.description.toLowerCase().includes(lowerCaseQuery)
+        );
+        return channelMatch || programMatch;
     });
     
-    return output || [];
+    return filteredChannels.map(channel => ({
+        ...channel,
+        programs: channel.programs.slice(0, 5)
+    }));
   }
 );
 
