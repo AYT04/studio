@@ -9,56 +9,56 @@
  */
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { channels as mockChannels, type Channel } from '@/data/mock-youtube-data';
+import { channels as mockChannels, type Channel, type Program } from '@/data/mock-youtube-data';
 
 const YoutubeSearchInputSchema = z.object({
   query: z.string().describe('The search query for channels or keywords.'),
 });
 export type YoutubeSearchInput = z.infer<typeof YoutubeSearchInputSchema>;
 
-// We can't define a recursive schema with Zod easily, so we define types manually
-// and use z.any() for the schema.
-export type YoutubeSearchOutput = Channel[];
+const ProgramSchema = z.object({
+    id: z.string().describe('A unique identifier for the program, e.g., "p-1-1".'),
+    title: z.string().describe('The title of the video.'),
+    startTime: z.string().describe('The start time in HH:MM format.'),
+    endTime: z.string().describe('The end time in HH:MM format.'),
+    videoId: z.string().describe('The YouTube video ID.'),
+    description: z.string().describe('A brief description of the video content.'),
+});
+
+const ChannelSchema = z.object({
+    id: z.string().describe('A unique identifier for the channel, e.g., "ch-1".'),
+    name: z.string().describe('The name of the YouTube channel.'),
+    logoUrl: z.string().describe('A URL to an Unsplash image for the channel logo.'),
+    programs: z.array(ProgramSchema).describe("A list of the channel's 5 newest videos as programs."),
+});
+
+const YoutubeSearchOutputSchema = z.array(ChannelSchema);
+export type YoutubeSearchOutput = z.infer<typeof YoutubeSearchOutputSchema>;
+
 
 const youtubeSearchFlow = ai.defineFlow(
   {
     name: 'youtubeSearchFlow',
     inputSchema: YoutubeSearchInputSchema,
-    outputSchema: z.any(),
+    outputSchema: YoutubeSearchOutputSchema,
   },
-  async (input): Promise<YoutubeSearchOutput> => {
-    // This is a simulation. In a real scenario, you'd call the YouTube Data API here.
-    // We'll filter the mock data based on the query.
-    console.log(`Simulating YouTube API search for: ${input.query}`);
-    if (!input.query) {
+  async ({query}): Promise<YoutubeSearchOutput> => {
+    
+    if (!query) {
       return mockChannels.map(channel => ({
         ...channel,
         programs: channel.programs.slice(0, 5)
       }));
     }
 
-    const lowercasedQuery = input.query.toLowerCase();
-    
-    const results = mockChannels.filter(channel => 
-        channel.name.toLowerCase().includes(lowercasedQuery) || 
-        channel.programs.some(program => program.title.toLowerCase().includes(lowercasedQuery))
-      ).map(channel => {
-        // If the channel name matches, show its latest 5 videos.
-        if (channel.name.toLowerCase().includes(lowercasedQuery)) {
-            return {
-                ...channel,
-                programs: channel.programs.slice(0, 5),
-            };
-        }
-        // Otherwise, filter to show only matching programs (up to 5)
-        const matchingPrograms = channel.programs.filter(program => program.title.toLowerCase().includes(lowercasedQuery));
-        return {
-            ...channel,
-            programs: matchingPrograms.slice(0, 5),
-        };
-      });
+    const { output } = await ai.generate({
+        prompt: `You are a YouTube channel recommendation expert. Based on the user's query, generate a list of 5 relevant YouTube channels. For each channel, provide its name, a plausible Unsplash URL for a logo, and a list of its 5 most recent video titles with descriptions, YouTube video IDs, and scheduled start/end times within a 24-hour TV guide format.
 
-    return results;
+        Query: "${query}"`,
+        output: { schema: YoutubeSearchOutputSchema },
+    });
+    
+    return output || [];
   }
 );
 
